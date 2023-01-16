@@ -4,31 +4,42 @@ package com.khesam.logger.common.logging;
 import java.io.*;
 import java.util.Arrays;
 
-public class LogUtil {
+//https://github.com/michaelgantman/Mgnt/blob/master/src/main/java/com/mgnt/utils/TextUtils.java
+public class StackTraceUtil {
 
-    private static final String RELEVANT_PACKAGE[] = new String[]{"com.example."};
-    private static final String[] BLACK_LIST_WORDS = new String[]{"_ClientProxy", "_Subclass","io.quarkus.arc.impl."};
-    private static final String STANDARD_STAKTRACE_PREFIX = "at ";
+    private static final String[] DEFAULT_INTERESTED_PACKAGE = new String[] {"com.khesam."};
+    private static final String[] BLACK_LIST_WORDS = new String[] {"_ClientProxy", "_Subclass", "io.quarkus.arc.impl."};
+    private static final String STANDARD_STACK_TRACE_PREFIX = "at ";
     private static final String SKIPPING_LINES_STRING = "\t...";
-    private static final String CAUSE_STAKTRACE_PREFIX = "Caused by:";
-    private static final String SUPPRESED_STAKTRACE_PREFIX = "Suppressed:";
+    private static final String CAUSE_STACK_TRACE_PREFIX = "Caused by:";
+    private static final String SUPPRESSED_STACK_TRACE_PREFIX = "Suppressed:";
 
-    public static String getStacktrace(Throwable e, String[] relevantPackage) {
+    private StackTraceUtil() {}
+
+    public static String getStackTrace(Throwable e, String[] interestedPackage) {
         ByteArrayOutputStream stacktraceContent = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stacktraceContent));
 
-        return extractStackTrace(relevantPackage, BLACK_LIST_WORDS, stacktraceContent);
+        return extractStackTrace(interestedPackage, BLACK_LIST_WORDS, stacktraceContent);
     }
 
-    private static String extractStackTrace(String[] relevantPackage, String[] blackListWords, ByteArrayOutputStream stacktraceContent) {
+    private static String extractStackTrace(
+            String[] interestedPackage,
+            String[] blackListWords,
+            ByteArrayOutputStream stacktraceContent
+    ) {
         StringBuilder result = new StringBuilder("\n");
 
-        String[] relPacks = (relevantPackage != null && relevantPackage.length != 0) ? relevantPackage : RELEVANT_PACKAGE;
+        String[] relPacks = (interestedPackage != null && interestedPackage.length != 0) ?
+                interestedPackage : DEFAULT_INTERESTED_PACKAGE;
+
         if (stacktraceContent.size() > 0) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(stacktraceContent.toByteArray())))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new ByteArrayInputStream(stacktraceContent.toByteArray())))
+            ) {
                 String line = reader.readLine();
                 do {
-                    line = traverseSingularStacktrace(result, relPacks, blackListWords, reader, line);
+                    line = traverseSingularStackTrace(result, relPacks, blackListWords, reader, line);
                 } while (line != null);
             } catch (IOException ioe) {
                 result.delete(0, result.length()).append(stacktraceContent);
@@ -38,7 +49,13 @@ public class LogUtil {
     }
 
 
-    private static String traverseSingularStacktrace(StringBuilder result, String[] relPacks, String[] blackListWords, BufferedReader reader, String line) throws IOException {
+    private static String traverseSingularStackTrace(
+            StringBuilder result,
+            String[] relPacks,
+            String[] blackListWords,
+            BufferedReader reader,
+            String line
+    ) throws IOException {
 
         result.append(line).append("\n");
         boolean toBePrinted = true;
@@ -49,8 +66,8 @@ public class LogUtil {
 
         while ((line = reader.readLine()) != null) {
             String trimmedLine = line.trim();
-            if (trimmedLine.startsWith(STANDARD_STAKTRACE_PREFIX)) {
-                String stack = trimmedLine.substring(STANDARD_STAKTRACE_PREFIX.length());
+            if (trimmedLine.startsWith(STANDARD_STACK_TRACE_PREFIX)) {
+                String stack = trimmedLine.substring(STANDARD_STACK_TRACE_PREFIX.length());
 
                 blackWordContains = Arrays.stream(blackListWords).anyMatch(stack::contains);
                 isCurLineRelevantPack = Arrays.stream(relPacks).anyMatch(stack::startsWith);
@@ -59,7 +76,7 @@ public class LogUtil {
                     if (!relevantPackageReached && isCurLineRelevantPack) {
                         relevantPackageReached = true;
                         skipLineToBePrinted = false;
-                        toBePrinted=true;
+                        toBePrinted = true;
                     }
                 } else {
                     toBePrinted = false;
@@ -82,7 +99,7 @@ public class LogUtil {
                  * This "else" branch deals with lines in the stacktrace that either start next singular stacktrace or are the last line in current
                  * singular stacktrace and it is of the form "... X more" where X is a number.
                  */
-                if (trimmedLine.startsWith(CAUSE_STAKTRACE_PREFIX) || trimmedLine.startsWith(SUPPRESED_STAKTRACE_PREFIX)) {
+                if (trimmedLine.startsWith(CAUSE_STACK_TRACE_PREFIX) || trimmedLine.startsWith(SUPPRESSED_STACK_TRACE_PREFIX)) {
                     /*
                      * If this is the first line of next singular stacktrace we break out of the current cycle and return this line for the next
                      * iteration which will invoke this method again

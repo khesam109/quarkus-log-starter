@@ -12,12 +12,14 @@ import java.util.*;
 @ApplicationScoped
 public class LogHandler {
 
+    private final String[] INTERESTED_PACKAGE = new String[] {"com.khesam."};
+
+
     //https://www.eclipse.org/lists/aspectj-users/msg05677.html
     private final Set<Throwable> throwableRecord = Collections.newSetFromMap(new WeakHashMap<>());
 
     private final LogWriter logWriter;
 
-    private final String[] relPackage = new String[]{"com.khesam."};
 
 
     @Inject
@@ -118,20 +120,20 @@ public class LogHandler {
             errorLogBuilder
                     .withCause(exception.errorResponse().getMessage())
                     .withCauseException(exception.getClass().getName())
-                    .withCauseExceptionStack(LogUtil.getStacktrace(throwable, relPackage));
+                    .withCauseExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
 
 
             exception.getThrowable().ifPresent(e ->
                     errorLogBuilder
                             .withOriginCause(e.getMessage())
                             .withOriginCauseException(e.getClass().getName())
-                            .withOriginCauseExceptionStack(LogUtil.getStacktrace(e, relPackage)));
+                            .withOriginCauseExceptionStack(StackTraceUtil.getStackTrace(e, INTERESTED_PACKAGE)));
 
         } else if (throwable.getMessage() != null) {
             errorLogBuilder
                     .withCause(throwable.getMessage())
                     .withCauseException(throwable.getClass().getName())
-                    .withCauseExceptionStack(LogUtil.getStacktrace(throwable, relPackage));
+                    .withCauseExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
         }
 
         return errorLogBuilder.build();
