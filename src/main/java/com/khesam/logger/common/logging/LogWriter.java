@@ -2,12 +2,12 @@ package com.khesam.logger.common.logging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khesam.logger.common.di.LoggerObjectMapperQualifier;
 import com.khesam.logger.common.util.StringUtils;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 
 @ApplicationScoped
@@ -17,7 +17,7 @@ public class LogWriter {
     private final ObjectMapper objectMapper;
 
     @Inject
-    public LogWriter(Logger logger, @Named("logger-object-mapper") ObjectMapper objectMapper) {
+    public LogWriter(Logger logger, @LoggerObjectMapperQualifier ObjectMapper objectMapper) {
         this.logger = logger;
         this.objectMapper = objectMapper;
     }

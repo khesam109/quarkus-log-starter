@@ -4,14 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ErrorLog {
-    @JsonProperty("Cause") private String cause;
-    @JsonProperty("CauseException") private String causeException;
-    @JsonProperty("CauseExceptionStack") @JsonIgnore private String causeExceptionStack;
+    @JsonProperty("Cause") private final String cause;
+    @JsonProperty("CauseException") private final String causeException;
+    @JsonProperty("CauseExceptionStack") @JsonIgnore private final String causeExceptionStack;
 
-    @JsonProperty("OriginCause") private String originCause;
-    @JsonProperty("OriginCauseException") private String originCauseException;
-    @JsonProperty("OriginCauseExceptionStack") @JsonIgnore private String originCauseExceptionStack;
+    @JsonProperty("OriginCause") private final String originCause;
+    @JsonProperty("OriginCauseException") private final String originCauseException;
+    @JsonProperty("OriginCauseExceptionStack") @JsonIgnore private final String originCauseExceptionStack;
 
+    private ErrorLog(Builder builder) {
+        cause = builder.cause;
+        causeException = builder.causeException;
+        causeExceptionStack = builder.causeExceptionStack;
+        originCause = builder.originCause;
+        originCauseException = builder.originCauseException;
+        originCauseExceptionStack = builder.originCauseExceptionStack;
+    }
 
     public String getCause() {
         return cause;
@@ -37,7 +45,7 @@ public class ErrorLog {
         return originCauseExceptionStack;
     }
 
-    public static final class ErrorLogBuilder {
+    public static final class Builder {
         private String cause;
         private String causeException;
         private String causeExceptionStack;
@@ -45,52 +53,45 @@ public class ErrorLog {
         private String originCauseException;
         private String originCauseExceptionStack;
 
-        private ErrorLogBuilder() {
+        private Builder() {
         }
 
-        public static ErrorLogBuilder anErrorLog() {
-            return new ErrorLogBuilder();
+        public static Builder builder() {
+            return new Builder();
         }
 
-        public ErrorLogBuilder withCause(String cause) {
-            this.cause = cause;
+        public Builder cause(String val) {
+            cause = val;
             return this;
         }
 
-        public ErrorLogBuilder withCauseException(String causeException) {
-            this.causeException = causeException;
+        public Builder causeException(String val) {
+            causeException = val;
             return this;
         }
 
-        public ErrorLogBuilder withCauseExceptionStack(String causeExceptionStack) {
-            this.causeExceptionStack = causeExceptionStack;
+        public Builder causeExceptionStack(String val) {
+            causeExceptionStack = val;
             return this;
         }
 
-        public ErrorLogBuilder withOriginCause(String originCause) {
-            this.originCause = originCause;
+        public Builder originCause(String val) {
+            originCause = val;
             return this;
         }
 
-        public ErrorLogBuilder withOriginCauseException(String originCauseException) {
-            this.originCauseException = originCauseException;
+        public Builder originCauseException(String val) {
+            originCauseException = val;
             return this;
         }
 
-        public ErrorLogBuilder withOriginCauseExceptionStack(String originCauseExceptionStack) {
-            this.originCauseExceptionStack = originCauseExceptionStack;
+        public Builder originCauseExceptionStack(String val) {
+            originCauseExceptionStack = val;
             return this;
         }
 
         public ErrorLog build() {
-            ErrorLog errorLog = new ErrorLog();
-            errorLog.originCauseException = this.originCauseException;
-            errorLog.causeExceptionStack = this.causeExceptionStack;
-            errorLog.originCause = this.originCause;
-            errorLog.cause = this.cause;
-            errorLog.originCauseExceptionStack = this.originCauseExceptionStack;
-            errorLog.causeException = this.causeException;
-            return errorLog;
+            return new ErrorLog(this);
         }
     }
 }

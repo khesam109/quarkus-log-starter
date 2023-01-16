@@ -113,27 +113,27 @@ public class LogHandler {
         }
         throwableRecord.add(throwable);
 
-        ErrorLog.ErrorLogBuilder errorLogBuilder = ErrorLog.ErrorLogBuilder.anErrorLog();
+        ErrorLog.Builder errorLogBuilder = ErrorLog.Builder.builder();
 
         if (throwable instanceof BaseException) {
             BaseException exception = (BaseException) throwable;
             errorLogBuilder
-                    .withCause(exception.errorResponse().getMessage())
-                    .withCauseException(exception.getClass().getName())
-                    .withCauseExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
+                    .cause(exception.errorResponse().getMessage())
+                    .causeException(exception.getClass().getName())
+                    .causeExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
 
 
             exception.getThrowable().ifPresent(e ->
                     errorLogBuilder
-                            .withOriginCause(e.getMessage())
-                            .withOriginCauseException(e.getClass().getName())
-                            .withOriginCauseExceptionStack(StackTraceUtil.getStackTrace(e, INTERESTED_PACKAGE)));
+                            .originCause(e.getMessage())
+                            .originCauseException(e.getClass().getName())
+                            .originCauseExceptionStack(StackTraceUtil.getStackTrace(e, INTERESTED_PACKAGE)));
 
         } else if (throwable.getMessage() != null) {
             errorLogBuilder
-                    .withCause(throwable.getMessage())
-                    .withCauseException(throwable.getClass().getName())
-                    .withCauseExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
+                    .cause(throwable.getMessage())
+                    .causeException(throwable.getClass().getName())
+                    .causeExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
         }
 
         return errorLogBuilder.build();

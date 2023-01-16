@@ -21,7 +21,7 @@ public class ObjectMapperProvider {
 
     @Produces
     @ApplicationScoped
-    @Named("logger-object-mapper")
+    @LoggerObjectMapperQualifier
     public ObjectMapper provideObjectMapper(
             @Named("complementary-annotation-introspector") JacksonAnnotationIntrospector jacksonAnnotationIntrospector
     ) {

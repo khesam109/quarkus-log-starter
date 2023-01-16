@@ -7,20 +7,20 @@ import java.util.Optional;
 
 public abstract class BaseException extends RuntimeException {
 
-    private final Optional<Throwable> throwable;
+    private final Throwable throwable;
 
     public BaseException() {
-        this.throwable = Optional.empty();
+        throwable = null;
     }
 
     public BaseException(Throwable throwable) {
-        this.throwable = Optional.of(throwable);
+        this.throwable = throwable;
     }
 
     public abstract int httpCode();
     public abstract ErrorResponse errorResponse();
 
-    public Optional<Throwable> getThrowable() {
-        return throwable;
+    public final Optional<Throwable> getThrowable() {
+        return Optional.ofNullable(this.throwable);
     }
 }
