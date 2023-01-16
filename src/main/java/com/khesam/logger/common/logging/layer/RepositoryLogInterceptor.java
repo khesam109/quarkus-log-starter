@@ -15,9 +15,6 @@ import javax.interceptor.InvocationContext;
 @EnableLogging(EnableLogging.Layer.REPOSITORY)
 public class RepositoryLogInterceptor extends BaseLogInterceptor {
 
-    @ConfigProperty(name = "log.profile")
-    String logProfile;
-
     @Inject
     public RepositoryLogInterceptor(LogHandler logHandler) {
         super(logHandler);
@@ -25,7 +22,7 @@ public class RepositoryLogInterceptor extends BaseLogInterceptor {
 
     @AroundInvoke
     public Object aroundInvoke(InvocationContext context) throws Exception {
-        return handle(context, logProfile);
+        return handle(context);
 
     }
 }

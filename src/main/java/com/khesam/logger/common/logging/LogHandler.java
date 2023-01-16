@@ -1,6 +1,5 @@
 package com.khesam.logger.common.logging;
 
-
 import com.khesam.logger.common.exception.BaseException;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -10,7 +9,6 @@ import javax.ws.rs.core.Response;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-
 @ApplicationScoped
 public class LogHandler {
 
@@ -19,7 +17,7 @@ public class LogHandler {
 
     private final LogWriter logWriter;
 
-    private final String[] relPackage = new String[]{"com.example."};
+    private final String[] relPackage = new String[]{"com.khesam."};
 
 
     @Inject

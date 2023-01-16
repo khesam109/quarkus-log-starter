@@ -5,18 +5,21 @@ import com.khesam.logger.common.logging.EnableLogging;
 import com.khesam.logger.common.logging.LogHandler;
 import com.khesam.logger.common.logging.LogMe;
 import com.khesam.logger.common.util.StringUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.interceptor.InvocationContext;
 
 public abstract class BaseLogInterceptor {
 
+    @ConfigProperty(name = "log.profile")
+    String logProfile;
     private final LogHandler logHandler;
 
     public BaseLogInterceptor(LogHandler logHandler) {
         this.logHandler = logHandler;
     }
 
-    protected Object handle(InvocationContext context, String logProfile) throws Exception {
+    protected Object handle(InvocationContext context) throws Exception {
         EnableLogging enableLogging = getEnableLoggingInfo(context);
         if (StringUtils.notEmpty(enableLogging.profile()) && !enableLogging.profile().equalsIgnoreCase(logProfile)) {
             return context.proceed();
