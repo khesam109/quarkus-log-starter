@@ -6,11 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ErrorLog {
     @JsonProperty("Cause") private final String cause;
     @JsonProperty("CauseException") private final String causeException;
-    @JsonProperty("CauseExceptionStack") @JsonIgnore private final String causeExceptionStack;
-
+    @JsonIgnore private final String causeExceptionStack;
     @JsonProperty("OriginCause") private final String originCause;
     @JsonProperty("OriginCauseException") private final String originCauseException;
-    @JsonProperty("OriginCauseExceptionStack") @JsonIgnore private final String originCauseExceptionStack;
+    @JsonIgnore private final String originCauseExceptionStack;
 
     private ErrorLog(Builder builder) {
         cause = builder.cause;

@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class StackTraceUtil {
 
     private static final String[] DEFAULT_INTERESTED_PACKAGE = new String[] {"com.khesam."};
-    private static final String[] BLACK_LIST_WORDS = new String[] {"_ClientProxy", "_Subclass", "io.quarkus.arc.impl."};
+    private static final String[] BLACK_LIST_WORDS = new String[] {"_ClientProxy", "_Subclass", "io.quarkus.arc.impl.", "com.khesam.logger.common.logging"};
     private static final String STANDARD_STACK_TRACE_PREFIX = "at ";
     private static final String SKIPPING_LINES_STRING = "\t...";
     private static final String CAUSE_STACK_TRACE_PREFIX = "Caused by:";
