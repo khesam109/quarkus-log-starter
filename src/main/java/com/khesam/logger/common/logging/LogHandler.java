@@ -1,6 +1,7 @@
 package com.khesam.logger.common.logging;
 
 import com.khesam.logger.common.exception.BaseException;
+import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -113,15 +114,13 @@ public class LogHandler {
         }
         throwableRecord.add(throwable);
 
-        ErrorLog.Builder errorLogBuilder = ErrorLog.Builder.builder();
+        ErrorLog.Builder errorLogBuilder = ErrorLog.Builder.builder()
+                .causeException(throwable.getClass().getName())
+                .causeExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
 
         if (throwable instanceof BaseException) {
             BaseException exception = (BaseException) throwable;
-            errorLogBuilder
-                    .cause(exception.errorResponse().getMessage())
-                    .causeException(exception.getClass().getName())
-                    .causeExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
-
+            errorLogBuilder.cause(exception.errorResponse().getMessage());
 
             exception.getThrowable().ifPresent(e ->
                     errorLogBuilder
@@ -129,15 +128,19 @@ public class LogHandler {
                             .originCauseException(e.getClass().getName())
                             .originCauseExceptionStack(StackTraceUtil.getStackTrace(e, INTERESTED_PACKAGE)));
 
+        } else if (throwable instanceof ResteasyWebApplicationException) {
+            try {
+                String errorResponse = ((ResteasyWebApplicationException) throwable).unwrap()
+                        .getResponse().readEntity(String.class);
+                errorLogBuilder.externalErrorBody(errorResponse);
+            } catch (Exception ex) {
+                errorLogBuilder.cause(throwable.getMessage());
+            }
         } else if (throwable.getMessage() != null) {
-            errorLogBuilder
-                    .cause(throwable.getMessage())
-                    .causeException(throwable.getClass().getName())
-                    .causeExceptionStack(StackTraceUtil.getStackTrace(throwable, INTERESTED_PACKAGE));
+            errorLogBuilder.cause(throwable.getMessage());
         }
 
         return errorLogBuilder.build();
-
     }
 
 

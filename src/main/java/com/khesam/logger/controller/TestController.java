@@ -52,6 +52,21 @@ public class TestController implements TestRestResource {
         ).build();
     }
 
+    @Override
+    @LogMe
+    public Response successfulExternalCall() {
+        return Response.ok(
+                testService.successfulExternalCall()
+        ).build();
+    }
+
+    @Override
+    @LogMe
+    public Response unsuccessfulExternalCall() {
+        testService.unsuccessfulExternalCall();
+        return Response.noContent().build();
+    }
+
     public String callee(TestHappyRequestData testHappyRequestData) {
         return privateCallee(testHappyRequestData);
     }

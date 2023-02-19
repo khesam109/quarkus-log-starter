@@ -10,6 +10,8 @@ public class ErrorLog {
     @JsonProperty("OriginCause") private final String originCause;
     @JsonProperty("OriginCauseException") private final String originCauseException;
     @JsonIgnore private final String originCauseExceptionStack;
+    @JsonProperty("externalErrorBody") private final String externalErrorBody;
+
 
     private ErrorLog(Builder builder) {
         cause = builder.cause;
@@ -18,6 +20,7 @@ public class ErrorLog {
         originCause = builder.originCause;
         originCauseException = builder.originCauseException;
         originCauseExceptionStack = builder.originCauseExceptionStack;
+        externalErrorBody = builder.externalErrorBody;
     }
 
     public String getCause() {
@@ -44,6 +47,10 @@ public class ErrorLog {
         return originCauseExceptionStack;
     }
 
+    public String getExternalErrorBody() {
+        return externalErrorBody;
+    }
+
     public static final class Builder {
         private String cause;
         private String causeException;
@@ -51,6 +58,7 @@ public class ErrorLog {
         private String originCause;
         private String originCauseException;
         private String originCauseExceptionStack;
+        private String externalErrorBody;
 
         private Builder() {
         }
@@ -86,6 +94,11 @@ public class ErrorLog {
 
         public Builder originCauseExceptionStack(String val) {
             originCauseExceptionStack = val;
+            return this;
+        }
+
+        public Builder externalErrorBody(String val) {
+            externalErrorBody = val;
             return this;
         }
 

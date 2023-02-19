@@ -3,10 +3,7 @@ package com.khesam.logger.controller;
 import com.khesam.logger.controller.dto.TestHappyRequestData;
 import com.khesam.logger.controller.dto.TestRequestData;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -37,5 +34,15 @@ public interface TestRestResource {
     @Path("/rethrow-exception")
     Response rethrowException(TestRequestData testHappyRequestData);
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/successful-external")
+    Response successfulExternalCall();
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/unsuccessful-external")
+    Response unsuccessfulExternalCall();
 }
